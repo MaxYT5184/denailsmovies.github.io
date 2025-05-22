@@ -209,21 +209,20 @@
       container.innerHTML = '';
 
       movies.filter(movie => {
-  const matchTitle = movie.title.toLowerCase().includes(search);
-  const matchCategory = category === 'all' || movie.category === category;
-  return matchTitle && matchCategory;
-}).forEach(movie => {
-  const div = document.createElement('div');
-  div.className = 'movie';
-  div.innerHTML = `
-    <img src="${movie.thumbnail}" alt="${movie.title}" class="thumbnail">
-    <div class="movie-title">${movie.title}</div>
-    <p class="description">${movie.description}</p>
-  `;
-  div.onclick = () => openPlayer(movie.file);
-  container.appendChild(div);
-});
-
+        const matchTitle = movie.title.toLowerCase().includes(search);
+        const matchCategory = category === 'all' || movie.category === category;
+        return matchTitle && matchCategory;
+      }).forEach(movie => {
+        const div = document.createElement('div');
+        div.className = 'movie';
+        div.innerHTML = 
+          <img src="${movie.thumbnail}" alt="${movie.title}" class="thumbnail">
+          <div class="movie-title">${movie.title}</div>
+        ;
+        div.onclick = () => openPlayer(movie.file);
+        container.appendChild(div);
+      });
+    }
 
     function toggleMode() {
       document.body.classList.toggle('light');
