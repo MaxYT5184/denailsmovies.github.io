@@ -75,6 +75,12 @@
       font-weight: bold;
     }
 
+.description {
+  padding: 0 10px 10px;
+  font-size: 0.9rem;
+  color: var(--text);
+  text-align: center;
+}
     /* Movie Player Modal */
     #playerModal {
       position: fixed;
@@ -165,25 +171,29 @@
         title: "Little Manhattan",
         file: "movies/movie1.mp4",
         thumbnail: "thumbs/movie1.jpg",
-        category: "Romance"
+        category: "Romance",
+        description: "A coming-of-age romantic comedy about young love in New York City."
       },
       {
         title: "A Minecraft Movie",
         file: "movies/movie2.mp4",
         thumbnail: "thumbs/movie2.jpg",
-        category: "Action"
+        category: "Action",
+        description: "A blocky adventure through survival, creativity, and danger."
       },
       {
         title: "Iron Man",
         file: "movies/movie3.mp4",
         thumbnail: "thumbs/movie3.jpg",
-        category: "Comedy"
+        category: "Comedy",
+        description: "Tony Stark builds a high-tech suit to save the world with style."
       },
       {
         title: "Iron Man 2",
         file: "movies/movie4.mp4",
         thumbnail: "thumbs/movie4.jpg",
-        category: "Romance"
+        category: "Romance",
+        description: "Tony faces new enemies and a legacy crisis as Iron Man returns."
       }
     ];
 
@@ -199,20 +209,21 @@
       container.innerHTML = '';
 
       movies.filter(movie => {
-        const matchTitle = movie.title.toLowerCase().includes(search);
-        const matchCategory = category === 'all' || movie.category === category;
-        return matchTitle && matchCategory;
-      }).forEach(movie => {
-        const div = document.createElement('div');
-        div.className = 'movie';
-        div.innerHTML = `
-          <img src="${movie.thumbnail}" alt="${movie.title}" class="thumbnail">
-          <div class="movie-title">${movie.title}</div>
-        `;
-        div.onclick = () => openPlayer(movie.file);
-        container.appendChild(div);
-      });
-    }
+  const matchTitle = movie.title.toLowerCase().includes(search);
+  const matchCategory = category === 'all' || movie.category === category;
+  return matchTitle && matchCategory;
+}).forEach(movie => {
+  const div = document.createElement('div');
+  div.className = 'movie';
+  div.innerHTML = `
+    <img src="${movie.thumbnail}" alt="${movie.title}" class="thumbnail">
+    <div class="movie-title">${movie.title}</div>
+    <p class="description">${movie.description}</p>
+  `;
+  div.onclick = () => openPlayer(movie.file);
+  container.appendChild(div);
+});
+
 
     function toggleMode() {
       document.body.classList.toggle('light');
