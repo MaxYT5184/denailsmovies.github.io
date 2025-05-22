@@ -53,6 +53,7 @@
       overflow: hidden;
       box-shadow: 0 0 12px rgba(0,0,0,0.3);
       transition: transform 0.3s ease;
+      cursor: pointer;
     }
     .movie:hover {
       transform: scale(1.03);
@@ -66,13 +67,48 @@
       padding: 1rem;
       font-weight: bold;
     }
-    .movie video {
-      width: 100%;
-      height: auto;
+
+    /* Movie Player Modal */
+    #playerModal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.95);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+      padding: 1rem;
     }
-    .toggle-mode {
+    #playerModal video {
+      max-width: 90%;
+      max-height: 80vh;
+    }
+    .player-controls {
       margin-top: 1rem;
     }
+    .player-controls button {
+      background: var(--accent);
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
+      margin: 0 0.5rem;
+    }
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
     .home-btn {
       display: inline-block;
       background: var(--accent);
@@ -98,7 +134,8 @@
       <select id="categoryFilter">
         <option value="all">All Categories</option>
         <option value="Romance">Romance</option>
-        <!-- Add more categories as needed -->
+        <option value="Action">Action</option>
+        <option value="Comedy">Comedy</option>
       </select>
       <button onclick="toggleMode()">🌗 Toggle Theme</button>
     </div>
@@ -106,12 +143,39 @@
 
   <div class="movie-container" id="movieContainer"></div>
 
+  <!-- Movie Player Modal -->
+  <div id="playerModal">
+    <button class="close-btn" onclick="closePlayer()">❌</button>
+    <video id="moviePlayer" controls></video>
+    <div class="player-controls">
+      <button onclick="goFullscreen()">🔳 Fullscreen</button>
+    </div>
+  </div>
+
   <script>
     const movies = [
       {
         title: "Little Manhattan",
-        file: "movies/littlemanhatten.mp4",
-        thumbnail: "thumbs/littlemanhatten.jpg",
+        file: "movies/movie1.mp4",
+        thumbnail: "thumbs/movie1.jpg",
+        category: "Romance"
+      },
+      {
+        title: "A Minecraft Movie",
+        file: "movies/movie2.mp4",
+        thumbnail: "thumbs/movie2.jpg",
+        category: "Action"
+      },
+      {
+        title: "Iron Man",
+        file: "movies/movie3.mp4",
+        thumbnail: "thumbs/movie3.jpg",
+        category: "Comedy"
+      },
+      {
+        title: "Iron Man 2",
+        file: "movies/movie4.mp4",
+        thumbnail: "thumbs/movie4.jpg",
         category: "Romance"
       }
     ];
@@ -119,6 +183,8 @@
     const container = document.getElementById('movieContainer');
     const searchInput = document.getElementById('searchInput');
     const categoryFilter = document.getElementById('categoryFilter');
+    const playerModal = document.getElementById('playerModal');
+    const moviePlayer = document.getElementById('moviePlayer');
 
     function renderMovies() {
       const search = searchInput.value.toLowerCase();
@@ -135,14 +201,36 @@
         div.innerHTML = `
           <img src="${movie.thumbnail}" alt="${movie.title}" class="thumbnail">
           <div class="movie-title">${movie.title}</div>
-          <video controls src="${movie.file}" preload="metadata"></video>
         `;
+        div.onclick = () => openPlayer(movie.file);
         container.appendChild(div);
       });
     }
 
     function toggleMode() {
       document.body.classList.toggle('light');
+    }
+
+    function openPlayer(file) {
+      moviePlayer.src = file;
+      playerModal.style.display = 'flex';
+      moviePlayer.play();
+    }
+
+    function closePlayer() {
+      moviePlayer.pause();
+      moviePlayer.src = '';
+      playerModal.style.display = 'none';
+    }
+
+    function goFullscreen() {
+      if (moviePlayer.requestFullscreen) {
+        moviePlayer.requestFullscreen();
+      } else if (moviePlayer.webkitRequestFullscreen) {
+        moviePlayer.webkitRequestFullscreen();
+      } else if (moviePlayer.msRequestFullscreen) {
+        moviePlayer.msRequestFullscreen();
+      }
     }
 
     searchInput.addEventListener('input', renderMovies);
