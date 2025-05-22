@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Denails Movies</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#111" />
+  <style>
+    :root {
+      --bg: #111;
+      --fg: #fff;
+      --accent: #0078ff;
+      --card-bg: #1e1e1e;
+    }
+    body.light {
+      --bg: #f4f4f4;
+      --fg: #111;
+      --card-bg: #fff;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      transition: background 0.3s, color 0.3s;
+    }
+    header, section {
+      padding: 2rem;
+      text-align: center;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+    input, select, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: none;
+    }
+    .movie-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+    .movie {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 12px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+    }
+    .movie:hover {
+      transform: scale(1.03);
+    }
+    .thumbnail {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .movie-title {
+      padding: 1rem;
+      font-weight: bold;
+    }
+    .movie video {
+      width: 100%;
+      height: auto;
+    }
+    .toggle-mode {
+      margin-top: 1rem;
+    }
+    .home-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <section id="home">
+    <h1>🎬 Welcome to My Movie Collection</h1>
+    <p>Watch offline, anytime, anywhere.</p>
+    <a class="home-btn" href="#movies">Browse Movies</a>
+  </section>
+
+  <header id="movies">
+    <h2>🎞️ Movie Library</h2>
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Search..." />
+      <select id="categoryFilter">
+        <option value="all">All Categories</option>
+        <option value="Romance">Romance</option>
+        <!-- Add more categories as needed -->
+      </select>
+      <button onclick="toggleMode()">🌗 Toggle Theme</button>
+    </div>
+  </header>
+
+  <div class="movie-container" id="movieContainer"></div>
+
+  <script>
+    const movies = [
+      {
+        title: "Little Manhattan",
+        file: "movies/littlemanhatten.mp4",
+        thumbnail: "thumbs/littlemanhatten.jpg",
+        category: "Romance"
+      }
+    ];
+
+    const container = document.getElementById('movieContainer');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+
+    function renderMovies() {
+      const search = searchInput.value.toLowerCase();
+      const category = categoryFilter.value;
+      container.innerHTML = '';
+
+      movies.filter(movie => {
+        const matchTitle = movie.title.toLowerCase().includes(search);
+        const matchCategory = category === 'all' || movie.category === category;
+        return matchTitle && matchCategory;
+      }).forEach(movie => {
+        const div = document.createElement('div');
+        div.className = 'movie';
+        div.innerHTML = `
+          <img src="${movie.thumbnail}" alt="${movie.title}" class="thumbnail">
+          <div class="movie-title">${movie.title}</div>
+          <video controls src="${movie.file}" preload="metadata"></video>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle('light');
+    }
+
+    searchInput.addEventListener('input', renderMovies);
+    categoryFilter.addEventListener('change', renderMovies);
+    window.addEventListener('load', renderMovies);
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('Service Worker registered', reg))
+        .catch(err => console.error('Service Worker error:', err));
+    }
+  </script>
+</body>
+</html>
